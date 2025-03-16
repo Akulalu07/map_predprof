@@ -3,12 +3,12 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+
 	"go.uber.org/zap"
+
 	//"go/ast"
 	"io"
 	"net/http"
-	"server/database"
 
 	"github.com/labstack/echo/v4"
 )
@@ -88,16 +88,8 @@ func Map(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
-	jsonResponse, err := json.Marshal(resp)
-
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-	err = database.SaveDb(conn, resp.Map)
-	if err != nil {
-		c.JSON(http.StatusServiceUnavailable, err)
-	}
-	return c.JSON(http.StatusOK, string(jsonResponse))
+	
+	return c.JSON(http.StatusOK, resp)
 
 }
 
@@ -116,10 +108,6 @@ func Coords(c echo.Context) error {
 	resp.Sender = some.Message.Sender
 	resp.Price.Cuper = some.Message.Price[0]
 	resp.Price.Engel = some.Message.Price[1]
-	jsonResponse, err := json.Marshal(resp)
-	fmt.Println(jsonResponse)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-	return c.JSON(http.StatusOK, string(jsonResponse))
+
+	return c.JSON(http.StatusOK, resp)
 }

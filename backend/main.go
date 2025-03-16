@@ -1,11 +1,13 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
-	"go.uber.org/zap"
 	"os"
 	"server/database"
 	hd "server/handlers"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"go.uber.org/zap"
 )
 
 var (
@@ -38,8 +40,13 @@ func main() {
 	}
 
 	r := echo.New()
+	r.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+        AllowOrigins: []string{"*"},
+        AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE, echo.OPTIONS},
+        AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+    }))
 
 	r.POST("/api/map", hd.Map)            //return map
-	r.POST("/api/coords?url=", hd.Coords) //
+	r.POST("/api/coords", hd.Coords) //
 	r.Logger.Fatal(r.Start(":8080"))
 }
