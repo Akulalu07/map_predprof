@@ -1,38 +1,16 @@
 services:
-  db:
-    image: postgres:17
-    container_name: postgres_db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: some_pass
-      POSTGRES_DB: database
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
   backend:
     build: ./backend
-    container_name: go_backend
+    container_name: backend
     ports:
       - "8080:8080"
-    depends_on:
-      - db
-    environment:
-      DB_HOST: db
-      DB_USER: postgres
-      DB_PASSWORD: some_pass
-      DB_NAME: database
 
   frontend:
     build: ./frontend
-    container_name: svelte_frontend
+    container_name: frontend
     ports:
       - "3000:3000"
     depends_on:
       - backend
     environment:
       VITE_API_URL: 127.0.0.1:8080
-    
-volumes:
-  postgres_data:
