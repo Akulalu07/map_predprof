@@ -27,7 +27,7 @@ func main() {
 	dbname = os.Getenv("DB_NAME")
 	password = os.Getenv("DB_PASSWORD")
 	host = os.Getenv("DB_HOST")
-	
+
 	_, err = database.Init("./database/database.db")
 	if err != nil {
 		sugar.Fatal("Error with connect to database:", err)
@@ -39,7 +39,7 @@ func main() {
 
 	r := echo.New()
 
-	r.POST("/api/map", hd.Map)       //return map
-	r.POST("/api/coords", hd.Coords) //
+	r.POST("/api/map", hd.Map)            //return map
+	r.POST("/api/coords?url=", hd.Coords) //
 	r.Logger.Fatal(r.Start(":8080"))
 }

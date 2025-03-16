@@ -16,6 +16,10 @@ import (
 type ResponceMap struct {
 	Map [][]byte `json:"map"`
 }
+
+type Request struct {
+	Url string `json:"url"`
+}
 type APIResponseCoords struct {
 	Message struct {
 		Listener []int     `json:"listener"`
@@ -75,13 +79,17 @@ func generateCoords(conn string) (APIResponseCoords, error) {
 func Map(c echo.Context) error {
 	resp := new(ResponceMap)
 	var err error
-	conn := c.QueryParam("conn")
+	u := new(Request)
+	if err := c.Bind(u); err != nil {
+		return err
+	}
+	conn := u.Url
 	resp.Map, err = generateMap(conn)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	jsonResponse, err := json.Marshal(resp)
-	fmt.Println(jsonResponse)
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -95,7 +103,11 @@ func Map(c echo.Context) error {
 
 func Coords(c echo.Context) error {
 	resp := new(ResponseCoords)
-	conn := c.QueryParam("conn")
+	u := new(Request)
+	if err := c.Bind(u); err != nil {
+		return err
+	}
+	conn := u.Url
 	some, err := generateCoords(conn)
 	if err != nil {
 		return c.JSON(http.StatusServiceUnavailable, err)
